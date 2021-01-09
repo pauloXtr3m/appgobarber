@@ -28,6 +28,7 @@ import {
 import Input from '../../components/Input';
 import Button from '../../components/Button';
 import getValidationErrors from '../../utils/getValidationErrors';
+import { useAuth } from '../../hooks/auth';
 
 interface SignInFormData {
   email: string;
@@ -38,6 +39,7 @@ const SignIn: React.FC = () => {
   const formRef = useRef<FormHandles>(null);
   const passwordInputRef = useRef<TextInput>(null);
   const navigation = useNavigation();
+  const { signIn } = useAuth();
 
   const handleSignIn = useCallback(
     async (data: SignInFormData): Promise<void> => {
@@ -52,7 +54,7 @@ const SignIn: React.FC = () => {
         });
 
         await schema.validate(data, { abortEarly: false });
-        // await signIn({ email: data.email, password: data.password });
+        await signIn({ email: data.email, password: data.password });
       } catch (err) {
         if (err instanceof Yup.ValidationError) {
           const errors = getValidationErrors(err);
@@ -67,7 +69,7 @@ const SignIn: React.FC = () => {
         );
       }
     },
-    [],
+    [signIn],
   );
 
   return (
